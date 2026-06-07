@@ -1,0 +1,77 @@
+/* Triệt tiêu thanh cuộn thô trên các trình duyệt di động cho Menu trượt ngang */
+.scrollbar-none::-webkit-scrollbar {
+    display: none !important;
+}
+.scrollbar-none {
+    -ms-overflow-style: none !important;
+    scrollbar-width: none !important;
+}
+
+/* Định dạng trạng thái các tab liên kết chuyên mục chính */
+.nav-link {
+    position: relative;
+    padding: 0 4px;
+    height: 100%;
+    display: inline-flex;
+    align-items: center;
+    transition: all 0.2s ease-in-out;
+    opacity: 0.85;
+}
+.nav-link:hover {
+    opacity: 1;
+    color: #fef08a; /* Đổi màu chữ vàng nhẹ sang trọng khi di chuột */
+}
+.nav-link.active {
+    opacity: 1;
+    color: #ffffff;
+}
+.nav-link.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background-color: #ffffff;
+}
+
+/* Định dạng Layout Card bài viết */
+.news-card {
+    background-color: #ffffff;
+    padding: 12px;
+    border-radius: 4px;
+    border: 1px solid #e5e7eb;
+    display: flex;
+    gap: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+.news-card:hover {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    border-color: #cbd5e1;
+}
+
+/* Giới hạn số dòng hiển thị để tránh vỡ khối thiết kế */
+.line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;  
+    overflow: hidden;
+}
+
+/* Định cấu trúc chi tiết cho các tiêu đề trong Mega Menu thả xuống */
+.mega-title {
+    font-size: 13px;
+    letter-spacing: -0.025em;
+    text-transform: uppercase;
+    transition: color 0.15s ease;
+}
+.mega-title:hover {
+    color: #0066cc !important;
+}
+
+/* Hiệu ứng mượt cho khối Mega Menu thả xuống khi tác vụ mở kích hoạt */
+#mega-menu {
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}

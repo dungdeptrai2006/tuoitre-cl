@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Báo nhà Online - Bản Mô Phỏng Giao Diện</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-[#f7f7f7] text-[#222222] font-sans antialiased">
+
+    <header class="bg-white shadow-sm sticky top-0 z-40 border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+            
+            <div class="flex items-center space-x-2 cursor-pointer" onclick="switchTab('Mới Nhất')">
+                <span class="bg-[#ce0000] text-white font-extrabold text-2xl px-3 py-1 rounded-sm italic tracking-tighter">tuổi trẻ</span>
+                <span class="text-xs font-bold text-[#ce0000] mt-4 uppercase hidden sm:inline">ONLINE</span>
+            </div>
+
+            <div class="hidden md:flex items-center bg-gray-100 rounded-full px-4 py-1.5 w-80 border border-gray-200 focus-within:border-gray-400 transition-all">
+                <input type="text" id="search-input" placeholder="Tìm kiếm tin tức..." class="bg-transparent outline-none text-sm w-full pr-2 text-gray-700">
+                <button onclick="handleSearch()" class="text-gray-400 hover:text-[#ce0000] transition-colors">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+            </div>
+
+            <div class="flex items-center space-x-4">
+                <a href="https://podcast.tuoitre.vn/" target="_blank" rel="noopener noreferrer" class="flex items-center text-xs font-bold text-gray-600 hover:text-amber-500 transition-colors uppercase tracking-wide">
+                    <i class="fa-solid fa-microphone text-amber-500 text-sm mr-1"></i> <span class="hidden lg:inline">Podcast</span>
+                </a>
+                
+                <a href="https://www.youtube.com/channel/UC47WI-kZXFf0H_f7pvaNCEQ" target="_blank" rel="noopener noreferrer" class="flex items-center text-xs font-bold text-gray-600 hover:text-red-600 transition-colors uppercase tracking-wide">
+                    <i class="fa-brands fa-youtube text-red-600 text-sm mr-1"></i> <span class="hidden lg:inline">YouTube</span>
+                </a>
+
+                <div class="h-4 w-[1px] bg-gray-300"></div>
+
+                <div id="auth-zone">
+                    <button onclick="toggleModal(true)" class="bg-[#0066cc] hover:bg-[#0052a3] text-white text-xs font-bold px-3 py-2 rounded transition-all uppercase tracking-wide">
+                        <i class="fa-solid fa-user mr-1"></i> Đăng nhập
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <nav class="bg-[#ce0000] text-white text-xs font-bold uppercase relative shadow-inner">
+            <div class="max-w-7xl mx-auto px-4 flex items-center h-10 justify-between">
+                <div id="nav-tabs" class="flex items-center space-x-4 overflow-x-auto whitespace-nowrap scrollbar-none pr-4">
+                    <button onclick="switchTab('Mới Nhất')" class="nav-link active"><i class="fa-solid fa-house text-sm"></i></button>
+                    <button onclick="switchTab('Mới Nhất')" class="nav-link">Mới Nhất</button>
+                    <button onclick="switchTab('Xem Nhiều')" class="nav-link">Xem Nhiều</button>
+                    <button onclick="switchTab('Thời Sự')" class="nav-link">Thời Sự</button>
+                    <button onclick="switchTab('Thế Giới')" class="nav-link">Thế Giới</button>
+                    <button onclick="switchTab('Pháp Luật')" class="nav-link">Pháp Luật</button>
+                    <button onclick="switchTab('Kinh Doanh')" class="nav-link">Kinh Doanh</button>
+                    <button onclick="switchTab('Công Nghệ')" class="nav-link">Công Nghệ</button>
+                    <button onclick="switchTab('Xe')" class="nav-link">Xe</button>
+                    <button onclick="switchTab('Du Lịch')" class="nav-link">Du Lịch</button>
+                    <button onclick="switchTab('Văn Hóa')" class="nav-link">Văn Hóa</button>
+                    <button onclick="switchTab('Giải Trí')" class="nav-link">Giải Trí</button>
+                    <button onclick="switchTab('Thể Thao')" class="nav-link">Thể Thao</button>
+                    <button onclick="switchTab('Giáo Dục')" class="nav-link">Giáo Dục</button>
+                    <button onclick="switchTab('Sức Khỏe')" class="nav-link">Sức Khỏe</button>
+                </div>
+
+                <button onclick="toggleMegaMenu()" class="flex items-center bg-black/10 hover:bg-black/20 h-full px-3 transition-colors text-white border-l border-white/10 flex-shrink-0">
+                    <i class="fa-solid fa-bars text-sm mr-1.5"></i> Tất cả
+                </button>
+            </div>
+
+            <div id="mega-menu" class="absolute top-10 left-0 w-full bg-white text-gray-800 shadow-xl border-b border-gray-300 hidden z-50 transform opacity-0 transition-all duration-200">
+                <div class="max-w-7xl mx-auto p-6 grid grid-cols-1 lg:grid-cols-5 gap-6 relative">
+                    <button onclick="toggleMegaMenu(false)" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 font-normal text-xs flex items-center">
+                        Đóng <i class="fa-solid fa-xmark ml-1 text-sm"></i>
+                    </button>
+
+                    <div class="lg:col-span-4 grid grid-cols-2 sm:grid-cols-4 gap-6 text-xs font-normal normal-case text-gray-600">
+                        <div class="space-y-4">
+                            <div>
+                                <h3 onclick="selectMegaCategory('Video')" class="mega-title text-red-600 font-bold border-b pb-1 mb-1.5 cursor-pointer">Video</h3>
+                                <ul class="space-y-1">
+                                    <li class="hover:text-blue-600 cursor-pointer" onclick="selectMegaCategory('Video')">Mới nhất</li>
+                                    <li class="hover:text-blue-600 cursor-pointer" onclick="selectMegaCategory('Video')">Tin nóng</li>
+                                    <li class="hover:text-blue-600 cursor-pointer" onclick="selectMegaCategory('Video')">Trực tiếp</li>
+                                    <li class="hover:text-blue-600 cursor-pointer" onclick="selectMegaCategory('Video')">Thú vị</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h3 onclick="selectMegaCategory('Xe')" class="mega-title text-red-600 font-bold border-b pb-1 mb-1.5 cursor-pointer">Xe</h3>
+                                <ul class="space-y-1">
+                                    <li class="hover:text-blue-600 cursor-pointer" onclick="selectMegaCategory('Xe')">Tin tức</li>
+                                    <li class="hover:text-blue-600 cursor-pointer" onclick="selectMegaCategory('Xe')">Tư vấn mua xe</li>
+                                    <li class="hover:text-blue-600 cursor-pointer" onclick="selectMegaCategory('Xe')">Đánh giá xe</li>
+                                    <li class="hover:text-blue-600 cursor-pointer" onclick="selectMegaCategory('Xe')">Thị trường xe</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h3 onclick="selectMegaCategory('Giáo Dục')" class="mega-title text-red-600 font-bold border-b pb-1 mb-1.5 cursor-pointer">Giáo dục</h3>
+                                <ul class="space-y-1">
+                                    <li class="hover:text-blue-600 cursor-pointer" onclick="selectMegaCategory('Giáo Dục')">Tuyển sinh</li>
+                                    <li class="hover:text-blue-600 cursor-pointer" onclick="selectMegaCategory('Giáo Dục')">Nhịp sống học đường</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div>
+                                <h3 onclick="selectMegaCategory('Thời Sự')" class="mega-title text-red-600 font-bold border-b pb-1 mb-1.5 cursor-pointer">Thời sự</h3>
+                                <ul class="space-y-1">
+                                    <li class="hover:text-blue-600 cursor-pointer" onclick="selectMegaCategory('Thời Sự')">Bút Bi</li>
+                                    <li class="hover:text-blue-600 cursor-pointer" onclick="selectMegaCategory('Thời Sự')">Xã hội</li>
+                                    <li class="hover:text-blue-600 cursor-pointer" onclick="selectMegaCategory('Thời Sự')">Phóng sự</li>
+                                    <li class="hover:text-blue-600 cursor-pointer" onclick="selectMegaCategory('Thời Sự')">Bình luận</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h3 onclick="selectMegaCategory('Du Lịch')" class="mega-title text-red-600 font-bold border-b pb-1 mb-1.5 cursor-pointer">Du lịch</h3>
+                                <ul class="space-y-1">
+                                    <li class="hover:text-blue-600 cursor-pointer" onclick="selectMegaCategory('Du Lịch')">Cơ hội du lịch</li>
+                                    <li class="hover:text-blue-600 cursor-pointer" onclick="selectMegaCategory('Du Lịch')">Đi chơi</li>
+                                    <li class="hover:text-blue-600 cursor-pointer" onclick="selectMegaCategory('Du Lịch')">Mách bạn</li>
+                                    <li class="hover:text-blue-600 cursor-pointer" onclick="selectMegaCategory('Du Lịch')">Quê hương</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h3 onclick="selectMegaCategory('Nhà Đất')" class="mega-title text-red-600 font-bold border-b pb-1 mb-1.5 cursor-pointer">Nhà đất</h3>
+                                <ul class="space-y-1">
+                                    <li class="hover:text-blue-600 cursor-pointer" onclick="selectMegaCategory('Nhà Đất')">Hỏi đáp</li>
+                                    <li class="hover:text-blue-600 cursor-pointer" onclick="selectMegaCategory('Nhà Đất')">Thị trường</li>
+                                    <li class="hover:text-blue-600 cursor-pointer" onclick="selectMegaCategory('Nhà Đất')">Chính sách</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div>
+                                <h3 onclick="selectMegaCategory('Thế Giới')" class="mega-title text-red-600 font-bold border-b pb-1 mb-1.5 cursor-pointer">Thế giới</h3>
+                                <ul class="space-y-1">
+                                    <li class="hover:text-blue-600 cursor-pointer" onclick="selectMegaCategory('Thế Giới')">Bình luận</li>
+                                    <li class="hover:text-blue-600 cursor-pointer" onclick="selectMegaCategory('Thế Giới')">Kiều bào</li>
+                                    <li class="hover:text-blue-600 cursor-pointer" onclick="selectMegaCategory('Thế Giới')">Muôn màu</li>
+                                    <li class="hover:text-blue-600 cursor-pointer" onclick="selectMegaCategory('Thế Giới')">Hồ sơ</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h3 onclick="selectMegaCategory('Nhịp Sống Trẻ')" class="mega-title text-red-600 font-bold border-b pb-1 mb-1.5 cursor-pointer">Nhịp sống trẻ</h3>
+                                <ul class="space-y-1">
+                                    <li class="hover:text-blue-600 cursor-pointer" onclick="selectMegaCategory('Nhịp Sống Trẻ')">Xu hướng</li>
+                                    <li class="hover:text-blue-600 cursor-pointer" onclick="selectMegaCategory('Nhịp Sống Trẻ')">Theo gương Bác</li>
+                                    <li class="hover:text-blue-600 cursor-pointer" onclick="selectMegaCategory('Nhịp Sống Trẻ')">Khám phá</li>
+                                    <li class="hover:text-blue-600 cursor-pointer" onclick="selectMegaCategory('Nhịp Sống Trẻ')">Yêu</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h3 onclick="selectMegaCategory('Sức Khỏe')" class="mega-title text-red-600 font-bold border-b pb-1 mb-1.5 cursor-pointer">Sức khỏe</h3>
+                                <ul class="space-y-1">
+                                    <li class="hover:text-blue-600 cursor-pointer" onclick="selectMegaCategory('Sức Khỏe')">Dinh dưỡng</li>
+                                    <li class="hover:text-blue-600 cursor-pointer" onclick="selectMegaCategory('Sức Khỏe')">Mẹ & Bé</li>
+                                    <li class="hover:text-blue-600 cursor-pointer" onclick="selectMegaCategory('Sức Khỏe')">Giới tính</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div>
+                                <h3 onclick="selectMegaCategory('Pháp Luật')" class="mega-title text-red-600 font-bold border-b pb-1 mb-1.5 cursor-pointer">Pháp luật</h3>
+                                <ul class="space-y-1">
+                                    <li class="hover:text-blue-600 cursor-pointer" onclick="selectMegaCategory('Pháp Luật')">Chuyện pháp đình</li>
+                                    <li class="hover:text-blue-600 cursor-pointer" onclick="selectMegaCategory('Pháp Luật')">Tư vấn</li>
+                                    <li class="hover:text-blue-600 cursor-pointer" onclick="selectMegaCategory('Pháp Luật')">Pháp lý</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h3 onclick="selectMegaCategory('Văn Hóa')" class="mega-title text-red-600 font-bold border-b pb-1 mb-1.5 cursor-pointer">Văn hóa</h3>
+                                <ul class="space-y-1">
+                                    <li class="hover:text-blue-600 cursor-pointer" onclick="selectMegaCategory('Văn Hóa')">Nhân vật</li>
+                                    <li class="hover:text-blue-600 cursor-pointer" onclick="selectMegaCategory('Văn Hóa')">Sàn diễn</li>
+                                    <li class="hover:text-blue-600 cursor-pointer" onclick="selectMegaCategory('Văn Hóa')">Sách</li>
+                                    <li class="hover:text-blue-600 cursor-pointer" onclick="selectMegaCategory('Văn Hóa')">Đời sống</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h3 onclick="selectMegaCategory('Kinh Doanh')" class="mega-title text-red-600 font-bold border-b pb-1 mb-1.5 cursor-pointer">Kinh doanh</h3>
+                                <ul class="space-y-1">
+                                    <li class="hover:text-blue-600 cursor-pointer" onclick="selectMegaCategory('Kinh Doanh')">Tài chính</li>
+                                    <li class="hover:text-blue-600 cursor-pointer" onclick="selectMegaCategory('Kinh Doanh')">Doanh nghiệp</li>
+                                    <li class="hover:text-blue-600 cursor-pointer" onclick="selectMegaCategory('Kinh Doanh')">Mua sắm</li>
+                                    <li class="hover:text-blue-600 cursor-pointer" onclick="selectMegaCategory('Kinh Doanh')">Chứng khoán</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h3 onclick="selectMegaCategory('Giải Trí')" class="mega-title text-red-600 font-bold border-b pb-1 mb-1.5 cursor-pointer">Giải trí</h3>
+                                <ul class="space-y-1">
+                                    <li class="hover:text-blue-600 cursor-pointer" onclick="selectMegaCategory('Giải Trí')">Nghe gì hôm nay</li>
+                                    <li class="hover:text-blue-600 cursor-pointer" onclick="selectMegaCategory('Giải Trí')">Âm nhạc</li>
+                                    <li class="hover:text-blue-600 cursor-pointer" onclick="selectMegaCategory('Giải Trí')">Điện ảnh</li>
+                                    <li class="hover:text-blue-600 cursor-pointer" onclick="selectMegaCategory('Giải Trí')">TV Show</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h3 onclick="selectMegaCategory('Giả - Thật')" class="mega-title text-red-600 font-bold border-b pb-1 mb-1.5 cursor-pointer">Giả - Thật</h3>
+                            </div>
+                            <div>
+                                <h3 onclick="selectMegaCategory('Bạn Đọc')" class="mega-title text-red-600 font-bold border-b pb-1 mb-1.5 cursor-pointer">Bạn đọc</h3>
+                                <ul class="space-y-1">
+                                    <li class="hover:text-blue-600 cursor-pointer" onclick="selectMegaCategory('Bạn Đọc')">Phản hồi</li>
+                                    <li class="hover:text-blue-600 cursor-pointer" onclick="selectMegaCategory('Bạn Đọc')">Đường dây nóng</li>
+                                    <li class="hover:text-blue-600 cursor-pointer" onclick="selectMegaCategory('Bạn Đọc')">Tiêu điểm</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h3 onclick="selectMegaCategory('Công Nghệ')" class="mega-title text-red-600 font-bold border-b pb-1 mb-1.5 cursor-pointer">Công nghệ</h3>
+                                <ul class="space-y-1">
+                                    <li class="hover:text-blue-600 cursor-pointer" onclick="selectMegaCategory('Công Nghệ')">Thiết bị</li>
+                                    <li class="hover:text-blue-600 cursor-pointer" onclick="selectMegaCategory('Công Nghệ')">Chuyển đổi số</li>
+                                    <li class="hover:text-blue-600 cursor-pointer" onclick="selectMegaCategory('Công Nghệ')">Cầu nối</li>
+                                    <li class="hover:text-blue-600 cursor-pointer" onclick="selectMegaCategory('Công Nghệ')">Nhịp sống số</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h3 onclick="selectMegaCategory('Thể Thao')" class="mega-title text-red-600 font-bold border-b pb-1 mb-1.5 cursor-pointer">Thể thao</h3>
+                                <ul class="space-y-1">
+                                    <li class="hover:text-blue-600 cursor-pointer" onclick="selectMegaCategory('Thể Thao')">Bóng đá</li>
+                                    <li class="hover:text-blue-600 cursor-pointer" onclick="selectMegaCategory('Thể Thao')">Bóng rổ</li>
+                                    <li class="hover:text-blue-600 cursor-pointer" onclick="selectMegaCategory('Thể Thao')">Võ thuật</li>
+                                    <li class="hover:text-blue-600 cursor-pointer" onclick="selectMegaCategory('Thể Thao')">Khỏe 360</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h3 onclick="selectMegaCategory('Khoa Học')" class="mega-title text-red-600 font-bold border-b pb-1 mb-1.5 cursor-pointer">Khoa học</h3>
+                                <ul class="space-y-1">
+                                    <li class="hover:text-blue-600 cursor-pointer" onclick="selectMegaCategory('Khoa Học')">Thường thức</li>
+                                    <li class="hover:text-blue-600 cursor-pointer" onclick="selectMegaCategory('Khoa Học')">Phát minh</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="border-l border-gray-200 pl-5 space-y-4 font-bold text-xs text-gray-800 normal-case">
+                        <div onclick="selectMegaCategory('Mới Nhất')" class="hover:text-red-600 cursor-pointer py-1 border-b border-gray-100">Mới nhất</div>
+                        <div onclick="selectMegaCategory('Xem Nhiều')" class="hover:text-red-600 cursor-pointer py-1 border-b border-gray-100">Xem nhiều</div>
+                        <div onclick="selectMegaCategory('Sao Nhiều')" class="hover:text-red-600 cursor-pointer py-1 border-b border-gray-100">Sao nhiều</div>
+                        
+                        <div class="pt-2 text-gray-500 font-medium space-y-2">
+                            <div class="cursor-pointer hover:text-blue-600"><i class="fa-solid fa-cloud-sun mr-1.5"></i> Thời tiết</div>
+                            <div class="cursor-pointer hover:text-blue-600"><i class="fa-solid fa-cake-candles mr-1.5"></i> 50 năm thành lập báo Tuổi Trẻ</div>
+                            <div class="cursor-pointer hover:text-blue-600"><i class="fa-solid fa-star mr-1.5"></i> Trải nghiệm và đánh giá</div>
+                            <div onclick="selectMegaCategory('Kinh Doanh')" class="cursor-pointer hover:text-blue-600 flex items-center">
+                                <i class="fa-solid fa-chart-line mr-1.5"></i> Chứng khoán <span class="ml-1 bg-red-600 text-white text-[8px] font-extrabold px-1 py-0.2 rounded-full uppercase scale-90">New</span>
+                            </div>
+                        </div>
+
+                        <div class="border-t border-gray-200 pt-3 space-y-2.5 font-semibold">
+                            <div onclick="selectMegaCategory('Video')" class="hover:text-red-600 cursor-pointer flex items-center text-gray-700">
+                                <i class="fa-solid fa-camera mr-2 text-gray-400 text-sm"></i> Ảnh
+                            </div>
+                            <div onclick="selectMegaCategory('Công Nghệ')" class="hover:text-red-600 cursor-pointer flex items-center text-gray-700">
+                                <i class="fa-solid fa-chart-pie mr-2 text-gray-400 text-sm"></i> Infographic
+                            </div>
+                            <div onclick="selectMegaCategory('Thời Sự')" class="hover:text-red-600 cursor-pointer flex items-center text-gray-700">
+                                <i class="fa-solid fa-book-open mr-2 text-gray-400 text-sm"></i> Megastory
+                            </div>
+                        </div>
+
+                        <div class="border-t border-gray-200 pt-4 grid grid-cols-2 gap-2 opacity-75">
+                            <span class="text-[10px] text-red-600 font-extrabold italic">tuổi trẻ news</span>
+                            <span class="text-[10px] text-orange-600 font-extrabold italic">Cười</span>
+                            <span class="text-[10px] text-blue-600 font-extrabold italic">Tuổi trẻ Áo trắng</span>
+                            <span class="text-[10px] text-purple-600 font-extrabold italic">Mực Tím</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 py-5 grid grid-cols-1 lg:grid-cols-4 gap-5">
+        
+        <aside class="space-y-4">
+            <div class="bg-white p-4 rounded border border-gray-200 shadow-sm">
+                <div id="current-date" class="text-gray-500 text-xs font-semibold mb-2">Đang tải thời gian...</div>
+                <div class="text-sm font-bold text-blue-700 border-b pb-2 mb-3">
+                    <i class="fa-solid fa-cloud-sun mr-1"></i> Hà Nội <span class="text-gray-800 font-normal ml-2">27°C - 37°C</span>
+                </div>
+                
+                <h3 class="font-bold text-[#ce0000] text-xs uppercase tracking-wider mb-3">Tin nổi bật trong ngày</h3>
+                <div class="space-y-3 divide-y divide-gray-100" id="sidebar-left-news"></div>
+            </div>
+        </aside>
+
+        <section class="lg:col-span-2">
+            <div id="admin-publish-box" class="bg-white p-4 rounded border border-gray-200 shadow-sm hidden mb-5">
+                <h3 class="text-xs font-bold text-emerald-700 uppercase tracking-wider mb-3"><i class="fa-solid fa-shield-halved mr-1"></i> Quyền Quản Trị Viên (Admin Real-time)</h3>
+                <form id="publish-form" class="space-y-3">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <select id="pub-category" required class="w-full px-3 py-1.5 border border-gray-300 rounded text-xs outline-none focus:border-blue-500">
+                            <option value="Thời Sự">Thời Sự</option><option value="Thế Giới">Thế Giới</option>
+                            <option value="Pháp Luật">Pháp Luật</option><option value="Kinh Doanh">Kinh Doanh</option>
+                            <option value="Công Nghệ">Công Nghệ</option><option value="Xe">Xe</option>
+                            <option value="Du Lịch">Du Lịch</option><option value="Văn Hóa">Văn Hóa</option>
+                            <option value="Giải Trí">Giải Trí</option><option value="Thể Thao">Thể Thao</option>
+                            <option value="Giáo Dục">Giáo Dục</option><option value="Sức Khỏe">Sức Khỏe</option>
+                            <option value="Video">Video</option><option value="Khoa Học">Khoa Học</option>
+                            <option value="Bạn Đọc">Bạn Đọc</option>
+                        </select>
+                        <input type="text" id="pub-image" placeholder="Dán URL ảnh (hoặc để trống)" class="w-full px-3 py-1.5 border border-gray-300 rounded text-xs outline-none focus:border-blue-500">
+                    </div>
+                    <input type="text" id="pub-title" required placeholder="Nhập tiêu đề bài viết..." class="w-full px-3 py-1.5 border border-gray-300 rounded text-xs font-bold outline-none focus:border-blue-500">
+                    <textarea id="pub-summary" required rows="2" placeholder="Nhập trích dẫn tóm tắt ngắn..." class="w-full px-3 py-1.5 border border-gray-300 rounded text-xs outline-none focus:border-blue-500"></textarea>
+                    <textarea id="pub-content" required rows="4" placeholder="Nhập nội dung chi tiết bài báo..." class="w-full px-3 py-1.5 border border-gray-300 rounded text-xs outline-none focus:border-blue-500"></textarea>
+                    <button type="submit" class="w-full bg-[#ce0000] hover:bg-red-700 text-white text-xs font-bold py-2 rounded uppercase tracking-wide transition-all shadow-sm">Xuất bản bài viết</button>
+                </form>
+            </div>
+
+            <div id="main-content" class="space-y-5"></div>
+
+            <div id="article-detail" class="bg-white p-6 rounded border border-gray-200 shadow-sm hidden"></div>
+        </section>
+
+        <aside class="space-y-4">
+            <div class="bg-white p-4 rounded border border-gray-200 shadow-sm">
+                <h3 class="font-bold text-[#ce0000] border-b-2 border-[#ce0000] pb-2 mb-3 uppercase text-xs tracking-wider">
+                    <i class="fa-solid fa-fire mr-1"></i> Đọc Nhiều Nhất
+                </h3>
+                <ul class="space-y-4" id="sidebar-right-trending"></ul>
+            </div>
+
+            <div class="bg-white rounded border border-gray-200 shadow-sm overflow-hidden group cursor-pointer">
+                <div class="overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=400&q=80" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300">
+                </div>
+                <div class="p-3 bg-slate-900 text-white text-center">
+                    <div class="text-xs font-bold tracking-widest text-amber-400">THE MAGNOLIA</div>
+                    <p class="text-[10px] text-gray-400 mt-1">90% Căn hộ sở hữu thang máy riêng | Hotline: 0868 869 288</p>
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    <footer class="bg-[#222222] text-gray-400 text-xs py-8 mt-12 border-t-4 border-[#ce0000]">
+        <div class="max-w-7xl mx-auto px-4 text-center space-y-2">
+            <p class="font-bold text-gray-200 text-sm">© 2026 Toàn bộ bản quyền thuộc về Báo Tuổi Trẻ Online mô phỏng</p>
+            <p class="text-gray-500">Hệ thống xử lý Cơ sở dữ liệu client-side bảo mật IndexedDB phân quyền Admin.</p>
+        </div>
+    </footer>
+
+    <div id="login-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center hidden opacity-0 transition-all duration-300">
+        <div class="bg-white rounded p-6 w-full max-w-sm shadow-2xl relative transform scale-95 transition-all duration-300" id="modal-box">
+            <button onclick="toggleModal(false)" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <div class="flex border-b border-gray-200 mb-5 text-sm font-bold uppercase tracking-wider">
+                <button id="tab-login-btn" onclick="switchAuthMode('login')" class="w-1/2 pb-2 text-center border-b-2 border-[#ce0000] text-[#ce0000]">Đăng Nhập</button>
+                <button id="tab-register-btn" onclick="switchAuthMode('register')" class="w-1/2 pb-2 text-center border-b-2 border-transparent text-gray-400 hover:text-gray-600">Đăng Ký</button>
+            </div>
+            <div id="auth-alert" class="text-xs p-2.5 rounded mb-4 hidden items-center space-x-2">
+                <i class="fa-solid id-icon"></i>
+                <span id="auth-alert-text"></span>
+            </div>
+            
+            <form id="login-form" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-gray-600 mb-1">Tên tài khoản</label>
+                    <input type="text" id="username" required class="w-full px-3 py-2 border border-gray-300 rounded text-sm outline-none focus:border-blue-500" placeholder="Nhập tài khoản">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-600 mb-1">Mật khẩu</label>
+                    <input type="password" id="password" required class="w-full px-3 py-2 border border-gray-300 rounded text-sm outline-none focus:border-blue-500" placeholder="Nhập mật khẩu">
+                </div>
+                <button type="submit" class="w-full bg-[#ce0000] hover:bg-red-700 text-white font-bold py-2 rounded text-sm shadow transition-all uppercase">Xác nhận đăng nhập</button>
+            </form>
+            
+            <form id="register-form" class="space-y-4 hidden">
+                <div>
+                    <label class="block text-xs font-bold text-gray-600 mb-1">Họ và tên của bạn</label>
+                    <input type="text" id="reg-fullname" required class="w-full px-3 py-2 border border-gray-300 rounded text-sm outline-none focus:border-blue-500" placeholder="Ví dụ: Nguyễn Văn A">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-600 mb-1">Tên tài khoản muốn tạo</label>
+                    <input type="text" id="reg-username" required class="w-full px-3 py-2 border border-gray-300 rounded text-sm outline-none focus:border-blue-500" placeholder="Viết liền không dấu">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-600 mb-1">Mật khẩu mới</label>
+                    <input type="password" id="reg-password" required class="w-full px-3 py-2 border border-gray-300 rounded text-sm outline-none focus:border-blue-500" placeholder="Tối thiểu từ 6 ký tự">
+                </div>
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 rounded text-sm shadow transition-all uppercase">Tạo tài khoản mới</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
